@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeapp
+  labels:
+    app: kubeapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubeapp
+  template:
+    metadata:
+      labels:
+        app: kubeapp 
+    spec:
+      containers:
+      - name: blogapp
+        image: karthidevlpr/blogapp2:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 7000
+        env:
+            - name: port
+              value: "7000"
+
+      - name: kubeapp
+        image: karthidevlpr/kubeapp2:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+            - name: SRV_NAME
+              value: "legacy-application"
+            - name: PORT
+              value: "3000"
+            - name: TARGET
+              value: "http://localhost:7000"
